@@ -64,6 +64,7 @@ class RouteValidator
 		private function parseBasicRoute($route)
 		{
 			$pattern = $route;
+			
 	
 			// Získání QUERY STRING části patternu
 			$pattern_query = parse_url($pattern, PHP_URL_QUERY);
@@ -79,7 +80,12 @@ class RouteValidator
 			$prepared_pattern_to = array("{", "}");
 			$prepared_pattern = str_replace($prepared_pattern_from, $prepared_pattern_to, $prepared_pattern);
 			
+			// Ujištění, že každý modern pattern začíná a končí separátorem složky
+			$prepared_pattern = $prepared_pattern[0] == "/" ?  $prepared_pattern : "/" . $prepared_pattern;
+			$prepared_pattern = $prepared_pattern[strlen($prepared_pattern)-1] == "/" ? $prepared_pattern : $prepared_pattern ."/";
+			
 			return $prepared_pattern;
+			
 		}
 		
 		/** 
@@ -93,7 +99,19 @@ class RouteValidator
 			// Ověření zda vstup i pattern odpovídají a jsou ve stejném tvaru
 			$pattern_wildcard_status = fnmatch($pattern_wildcard, $this->parsed) ? true : false;
 			
-			return $pattern_wildcard_status;
+			// Ověření zda vstup i pattern mají stejně parametrů
+			$parsed_argc = count(explode("/", trim($this->parsed, "/" )));
+			$route_argc = count(explode("/", trim($route, "/" )));
+			
+			// Návrat na základě validaci URL proti patternu při stejném počtu parametrů
+			if($pattern_wildcard_status)
+			{
+				if($parsed_argc == $route_argc)
+				{
+					return true;
+				}
+			}
+			return false;
 			
 		}
 		

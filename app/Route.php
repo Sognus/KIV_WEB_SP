@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Utils\RouteValidator;
+use ReflectionClass;
 
 /**
 
@@ -17,6 +18,9 @@ class Route
 {
 	// Jediná přípustná instance třídy
 	private static $singleton;
+	
+	// Validátor Routy
+	private $validator;
 	
 	// Nezpracované URL
 	private $raw;
@@ -34,7 +38,7 @@ class Route
 		return self::$singleton;	
 	}
 	
-	
+
 	/*
 		a) Moderní URL
 			Route::get("/clanky", "foo\bar\Articles@showArcticles");
@@ -58,11 +62,76 @@ class Route
 	
 	private function __construct()
 	{		
-		
+		// Příprava nutných hodnot
 		$this->raw = $_SERVER["REQUEST_URI"];
 		$this->method = $_REQUEST["_method"] ?? $_SERVER["REQUEST_METHOD"];
+		$this->validator = new RouteValidator($this->raw);
+	
+	
+		// Zpracování routy a volání 
 		$this->handle();
+		$this->reflection();
 	}
+	
+	public static function tryRoute()
+	{
+		Route::get("/{test}","App\Controllers\TestController@target");
+		
+	}
+	
+	public static function get($where, $target)
+	{
+		// Ověří zda cíl volání je ve správném tvaru
+		if(!strpos($target, "@"))
+		{
+			return false;
+		}
+		
+		$target_parts = explode("@", $target);		
+		$class = $target_parts[0];
+		$method = $target_parts[1];
+		
+		
+		// Získání instance Route
+		$router = self::getInstance();
+		
+		// Ověří zda metoda požadavku je get
+		if($router->method != "GET")
+		{
+			return false;
+		}
+		
+		// Validuje routu vůči aktuálnímu URL
+		if(!$router->validator->validate($where))
+		{
+			return false;
+		}
+		
+		// Ověří zda daná třída existuje
+		if(!class_exists($class))
+		{
+			return false;
+		}
+			
+		// Ověří zda v dané třídě existuje požadovaná metoda
+		if(!method_exists($class, $method))
+		{
+			return false;
+		}
+		
+		// TODO: Získat z aktuální URL hodnoty vůči routě
+		// TODO: Zavolat metodu se získanými parametry
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	
 	
 	private function handle()
 	{
@@ -70,15 +139,23 @@ class Route
 		$test = new RouteValidator($this->raw);
 		$route = "/test/test/{pes}";
 		$status = $test->validate($route) ? "VALIDATED" : "REJECTED";
-		echo "Validace cesty vůči $route: ".$status;
+		//echo "Validace cesty vůči $route: ".$status;
 		
-		echo "<br>";
+		//echo "<br>";
 		
 		// Ukázka využití validace routy - Basic
 		$test = new RouteValidator($this->raw);
 		$route = "index.php?page=test&a={test}";
 		$status = $test->validate($route) ? "VALIDATED" : "REJECTED";
-		echo "Validace cesty vůči $route: ".$status;
+		////echo "Validace cesty vůči $route: ".$status;
+		
+		//echo "<br>";	
+	
+		// Ukázka využití validace routy - Modern
+		$test = new RouteValidator($this->raw);
+		$route = "/test/{test}";
+		$status = $test->validate($route) ? "VALIDATED" : "REJECTED";
+		//echo "Validace cesty vůči $route: ".$status;
 		
 		
 		

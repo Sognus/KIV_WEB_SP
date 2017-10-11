@@ -12,5 +12,6 @@ use App\Route;
 Database::connect("127.0.0.1", "root", "", "web", 3306);
 
 $r = Route::getInstance();
+Route::tryRoute();
 
 ?>
