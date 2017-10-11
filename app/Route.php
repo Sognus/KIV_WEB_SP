@@ -2,6 +2,17 @@
 
 namespace App;
 
+use App\Utils\RouteValidator;
+
+/**
+
+	Třída, která na základě validace od třídy RouteValidator
+	volá či nevolá relevantní metodu z kontroleru <- definováno
+	v rámci samotné cesty.
+
+	@author Jakub Vítek
+
+*/
 class Route
 {
 	// Jediná přípustná instance třídy
@@ -12,6 +23,17 @@ class Route
 	
 	// Metoda požadavku
 	private $method;
+	
+	
+	public static function getInstance()
+	{
+		if(self::$singleton == null)
+		{
+			self::$singleton = new self();
+		}
+		return self::$singleton;	
+	}
+	
 	
 	/*
 		a) Moderní URL
@@ -25,6 +47,7 @@ class Route
 		b) Jiný způsob URL
 			Route::get("index.php?page=uzivatel&username={username}", foo\bar\Users@getUserByName);
 				http://kiv.web.local/index.php?page=uzivatel&username=sognus -> foo\bar\Users::getUserByName("sognus") 
+				- Část řešení v /random/parseURL2.php
 			
 			
 	
@@ -34,20 +57,35 @@ class Route
 	*/
 	
 	private function __construct()
-	{
+	{		
 		
-		$this->$raw = urldecode($_SERVER["REQUEST_URI"]);
-		$this->$method = $_REQUEST["_method"] ?? $_SERVER["REQUEST_METHOD"];
-		$this->parse();
+		$this->raw = $_SERVER["REQUEST_URI"];
+		$this->method = $_REQUEST["_method"] ?? $_SERVER["REQUEST_METHOD"];
+		$this->handle();
 	}
 	
-	// Na základě tvaru požadované adresy zpracuje požadovanou URL
-	private function parse()
+	private function handle()
 	{
+		// Ukázka využití validace routy - Modern
+		$test = new RouteValidator($this->raw);
+		$route = "/test/test/{pes}";
+		$status = $test->validate($route) ? "VALIDATED" : "REJECTED";
+		echo "Validace cesty vůči $route: ".$status;
+		
+		echo "<br>";
+		
+		// Ukázka využití validace routy - Basic
+		$test = new RouteValidator($this->raw);
+		$route = "index.php?page=test&a={test}";
+		$status = $test->validate($route) ? "VALIDATED" : "REJECTED";
+		echo "Validace cesty vůči $route: ".$status;
+		
 		
 		
 		
 	}
+	
+
 	
 	
 	
