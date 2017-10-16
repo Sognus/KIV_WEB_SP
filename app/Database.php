@@ -37,6 +37,40 @@ Class Database
 		self::$connection->setAttribute(PDO::ATTR_PERSISTENT, TRUE);
 	}
 	
+	public static function query($sql, $where = NULL)
+	{
+		$sth = self::$connection->prepare($sql);
+		
+		try
+		{
+			$sth->execute($where);
+			
+		} 
+		catch (PDOException $ex)
+		{
+			print_r($ex->getMessage());
+		}		
+		
+		return $sth;
+		
+	}
+	
+	public static function assoc($result)
+	{
+		$res = $result->fetch(PDO::FETCH_ASSOC);
+		return $res;
+	}
+	
+	public static function assocAll($result)
+	{
+		$res = $result->fetchAll(PDO::FETCH_ASSOC);
+		return $res;
+		
+	}
+	
+	
+	
+	
 	
 	
 	

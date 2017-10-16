@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Utils\RouteValidator;
-use ReflectionClass;
 
 /**
 
@@ -70,7 +69,6 @@ class Route
 	
 		// Zpracování routy a volání 
 		$this->handle();
-		$this->reflection();
 	}
 	
 	public static function tryRoute()
