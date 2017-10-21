@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Routing;
 
-use App\Utils\RouteValidator;
+use App\Routing\RouteValidator;
 
 /**
 
@@ -10,6 +10,21 @@ use App\Utils\RouteValidator;
 	volá či nevolá relevantní metodu z kontroleru <- definováno
 	v rámci samotné cesty.
 
+			a) Moderní URL
+			Route::get("/clanky", "foo\bar\Articles@showArcticles");
+			Route::get("/clanky/{title}" -> "foo\bar\Articles@getArticle");
+			Route::get("/uzivatel/{username}", "foo\bar\Users@getUserByName")
+				http://kiv.web.local/uzivatel/viteja -> foo\bar\Users::getUserByID("viteja");
+			Route::get("/uzivatel/{id}", "foo\bar\Users@getUserById");
+				http://kiv.web.local/uzivatel/1 -> foo\bar\Users::getUserByID(1);
+		
+		b) Jiný způsob URL
+			Route::get("index.php?page=uzivatel&username={username}", foo\bar\Users@getUserByName);
+				http://kiv.web.local/index.php?page=uzivatel&username=sognus -> foo\bar\Users::getUserByName("sognus") 
+				- Část řešení v /random/parseURL2.php
+			
+	
+	
 	@author Jakub Vítek
 
 */
@@ -37,28 +52,6 @@ class Route
 		return self::$singleton;	
 	}
 	
-
-	/*
-		a) Moderní URL
-			Route::get("/clanky", "foo\bar\Articles@showArcticles");
-			Route::get("/clanky/{title}" -> "foo\bar\Articles@getArticle");
-			Route::get("/uzivatel/{username}", "foo\bar\Users@getUserByName")
-				http://kiv.web.local/uzivatel/sognus -> foo\bar\Users::getUserByID("sognus");
-			Route::get("/uzivatel/{id}", "foo\bar\Users@getUserById");
-				http://kiv.web.local/uzivatel/1 -> foo\bar\Users::getUserByID(1);
-		
-		b) Jiný způsob URL
-			Route::get("index.php?page=uzivatel&username={username}", foo\bar\Users@getUserByName);
-				http://kiv.web.local/index.php?page=uzivatel&username=sognus -> foo\bar\Users::getUserByName("sognus") 
-				- Část řešení v /random/parseURL2.php
-			
-			
-	
-	
-	
-	
-	*/
-	
 	private function __construct()
 	{		
 		// Příprava nutných hodnot
@@ -73,12 +66,18 @@ class Route
 	
 	public static function tryRoute()
 	{
+		Route::get("/","App\Controllers\TestController@target");
+		Route::get("/{test}","App\Controllers\TestController@target", array("int"));
 		Route::get("/{test}","App\Controllers\TestController@target");
+		Route::get("index.php?page=test&username={username}", "App\Controllers\TestController@target");
+		Route::get("index.php?page=test&username={userID}", "App\Controllers\TestController@target", array("string", "int"));
+		Route::get("index.php?page=test&username={userID}", "App\Controllers\TestController@target", array("string", "int"));
 		
 	}
 	
-	public static function get($where, $target)
+	public static function get($where, $target, $types = array())
 	{
+				
 		// Ověří zda cíl volání je ve správném tvaru
 		if(!strpos($target, "@"))
 		{
@@ -100,7 +99,7 @@ class Route
 		}
 		
 		// Validuje routu vůči aktuálnímu URL
-		if(!$router->validator->validate($where))
+		if(!$router->validator->validate($where, $types))
 		{
 			return false;
 		}
@@ -120,19 +119,11 @@ class Route
 		// TODO: Získat z aktuální URL hodnoty vůči routě
 		// TODO: Zavolat metodu se získanými parametry
 		
-		
-		
-		
-		
-		
-		
-		
-		
 	}
-	
 	
 	private function handle()
 	{
+		/*
 		// Ukázka využití validace routy - Modern
 		$test = new RouteValidator($this->raw);
 		$route = "/test/test/{pes}";
@@ -154,6 +145,7 @@ class Route
 		$route = "/test/{test}";
 		$status = $test->validate($route) ? "VALIDATED" : "REJECTED";
 		//echo "Validace cesty vůči $route: ".$status;
+		*/
 		
 		
 		
