@@ -69,6 +69,7 @@ class Route
 		Route::get("/","App\Controllers\TestController@target");
 		Route::get("/{test}","App\Controllers\TestController@target", array("int"));
 		Route::get("/{test}","App\Controllers\TestController@target");
+		Route::get("/ahoj/{test}","App\Controllers\TestController@target");
 		Route::get("index.php?page=test&username={username}", "App\Controllers\TestController@target");
 		Route::get("index.php?page=test&username={userID}", "App\Controllers\TestController@target", array("string", "int"));
 		Route::get("index.php?page=test&username={userID}", "App\Controllers\TestController@target", array("string", "int"));

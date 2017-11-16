@@ -2,6 +2,8 @@
 
 namespace App\Routing;
 
+use App\Utils\TextUtils;
+
 /**
 
 	Třída, která zpracuje vstupní URL 
@@ -174,6 +176,7 @@ class RouteValidator
 				
 			// Zahození associativních indexů
 			$parsed_parts = array_values($parsed_parts);
+			
 				
 			// Ověřuje zda všechny proměnné, co mají být numerické opravdu numerickou jsou
 			for($i = 0; $i < count($types); $i++)
@@ -191,8 +194,26 @@ class RouteValidator
 						 return false;
 				}
 			}
+			
+			// Uložení proměnných získaných z wildcard
+			parse_str($route, $wildcard_names);
+			
+			$findWLC = ["{", "}"];
+			$valueWLC = array_values($wildcard_names);
+			
+			for($q = 0; $q < count($valueWLC); $q++)
+			{
 				
-				return true;
+				if(strpos($valueWLC[$q], "{") !== false && strpos($valueWLC[$q], "}" ) !== false)
+				{
+					$key = str_replace($findWLC, "", $valueWLC[$q]);
+					$this->wildcard[$key] = $parsed_parts[$q];
+				}
+			
+			}
+			
+				
+			return true;
 				
 
 		}
@@ -221,86 +242,99 @@ class RouteValidator
 			
 		}
 		
-		/** 
-		*	Validuje routu vůči url typu uzivatel/viteja
-		*/
 		private function validateModern($route, $types = array())
 		{
+			
+			
+			
+			// Zvláštní chování kořenového nodu
+			if($this->raw == "/" || $route == "/")
+			{
+				// Rovná se routa kořenovému nodu?
+				$yrn = ($this->raw == $route);				
+				return $yrn;
+			}
+						
 			// Změna {cokoliv} na *
 			$pattern_wildcard = preg_replace("/\{(.*?)\}/", "*", $route);
+			$pattern_wildcard_parts = TextUtils::divide("/", trim($pattern_wildcard, "/"));
 			
-			// Ověření zda vstup i pattern odpovídají a jsou ve stejném tvaru
-			$pattern_wildcard_status = fnmatch($pattern_wildcard, $this->parsed) ? true : false;
+			$route_parts = TextUtils::divide("/", trim($this->raw, "/"));
 			
-			// Ověření zda vstup i pattern mají stejně parametrů
-			$parsed_argc = count(explode("/", trim($this->parsed, "/" )));
-			$route_argc = count(explode("/", trim($route, "/" )));
-			
-			// Ověření zda mají parametry požadovaný typ - příprava
-			$route_parts = array_values(array_filter(array_map('trim', explode("/", $route))));
-			$route_parts_desired = array();
-			
-			for($kk = 0; $kk < count($route_parts); $kk++)
+			// Routa má stejný počet zanoření jako URL
+			if(count($pattern_wildcard_parts) != count($route_parts))
 			{
-				$iterated = $route_parts[$kk];
-				
-				// Jedná se o parametr který chceme dále použít
-				if($iterated[0] === "{" && substr($iterated, -1) == "}")
-				{
-					$route_parts_desired[] = $iterated;
-				}
-				
-			}
-			
-			// Pokud nejsou specifikované typy proměnných, použije se jako typ string
-			if(count($types) == 0)
-			{
-				$types = array_fill(0, count($route_parts_desired), "string");
-			}
-			
-			// Získání částí URL zadané uživatelem
-			$raw_parts = array_values(array_filter(array_map('trim', explode("/", $this->raw))));
-			
-			// Všechny proměnné nemají specifikovaný typ
-			if(count($raw_parts) != count($types))
-			{
+				// Nemá
 				return false;
 			}
 			
-			// Ověření typů proměnných
-			for($i = 0; $i < count($types); $i++)
+			// Zjištění počtu wildcard
+			$pocetWLC = 0;
+			for($i = 0; $i < count($pattern_wildcard_parts); $i++)
 			{
+				if($pattern_wildcard_parts[$i] == "*")
+				{
+					$pocetWLC++;
+				}
+			}
+			
+			
+			// Pokud typy nebyly zadány, použijí se řetězce
+			if(count($types) < 1)
+			{
+				$types = array_fill(0, $pocetWLC, "string");
+			}
+			
+			// Ověření počtu typů
+			if(count($types) != $pocetWLC)
+			{
+				// Špatně definovaná routa (méně nebo více typů)
+				return false;
+			}
+			
+			// Parsování wildcard formátu pro jména wildcard
+			$wildcardVals = TextUtils::divide("/", trim($route, "/"));
+			
+			
+			// Ověření typů wildcard
+			$poradiWLC = 0;
+			for($i = 0; $i < count($pattern_wildcard_parts); $i++)
+			{
+				if($pattern_wildcard_parts[$i] == "*")
+				{
+					$overWLC = $route_parts[$i];
+					$typ = $types[$poradiWLC];
+					$key = $wildcardVals[$i];
 					
-				if($types[$i] == "int" && !is_numeric($raw_parts[$i]))
-				{
-						 // Proměnná není číslem, ale měla by být
-						 return false;
-				}
-				
-				if($types[$i] == "string" && is_numeric($raw_parts[$i]))
-				{
-						 // Proměnná je číslem ale neměla by být
-						 return false;
+					
+					if($typ == "string" && is_numeric($overWLC))
+					{
+						// Číselná cesta = špatně
+						return false;
+					}
+					
+					if($typ == "int" && !is_numeric($overWLC))
+					{
+						// Nečíselná cesta = špatně
+						return false;
+					}
+					
+					// Vyhovuje typování
+					$this->wildcard[$key] = $overWLC;
+					
+					
 				}
 			}
 			
+			// Vše v pořádku
+			return true;
 			
-			// Návrat na základě validaci URL proti patternu při stejném počtu parametrů
-			if($pattern_wildcard_status)
-			{
-				if($parsed_argc == $route_argc)
-				{
-					// Uložení wildcard proměnných
-					$this->parseWildcard($route);
-					return true;
-				}
-			}
-			return false;
+			
+			
+			
 			
 		}
 		
-		
-	
 		/** Na základě typu URL zpracuje danou URL pro účely validace */
 		private function parse()
 		{

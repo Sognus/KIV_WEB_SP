@@ -1,0 +1,3 @@
+<?php
+
+// TODO: Pøidat cesty 
