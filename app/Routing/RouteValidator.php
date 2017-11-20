@@ -297,14 +297,18 @@ class RouteValidator
 			
 			
 			// Ověření typů wildcard
+			$wildcard_replace = array("{", "}");
 			$poradiWLC = 0;
 			for($i = 0; $i < count($pattern_wildcard_parts); $i++)
 			{
+				
 				if($pattern_wildcard_parts[$i] == "*")
 				{
 					$overWLC = $route_parts[$i];
 					$typ = $types[$poradiWLC];
-					$key = $wildcardVals[$i];
+					$key = str_replace($wildcard_replace, "", $wildcardVals[$i]);
+					
+					$poradiWLC++;
 					
 					
 					if($typ == "string" && is_numeric($overWLC))
@@ -321,6 +325,8 @@ class RouteValidator
 					
 					// Vyhovuje typování
 					$this->wildcard[$key] = $overWLC;
+					
+					
 					
 					
 				}
@@ -412,6 +418,13 @@ class RouteValidator
 			
 			return $rtn;
 		}
+		
+		/** Vrátí proměnné z URL získané dle předpisu wildcard */
+		public function getVariables()
+		{
+			return $this->wildcard;
+		}
+		
 		
 		
 		

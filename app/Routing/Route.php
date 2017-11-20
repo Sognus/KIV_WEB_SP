@@ -70,8 +70,8 @@ class Route
 		Route::get("/{test}","App\Controllers\TestController@target", array("int"));
 		Route::get("/{test}","App\Controllers\TestController@target");
 		Route::get("/ahoj/{test}","App\Controllers\TestController@target");
-		Route::get("index.php?page=test&username={username}", "App\Controllers\TestController@target");
-		Route::get("index.php?page=test&username={userID}", "App\Controllers\TestController@target", array("string", "int"));
+		Route::get("/hello/{ahoj1}/{ahoj2}", "App\Controllers\TestController@target", array("string", "int"));
+		Route::get("index.php?page=test&username={username}", "App\Controllers\TestController@target", array("string", "string"));
 		Route::get("index.php?page=test&username={userID}", "App\Controllers\TestController@target", array("string", "int"));
 		
 	}
@@ -117,7 +117,11 @@ class Route
 			return false;
 		}
 		
-		// TODO: Získat z aktuální URL hodnoty vůči routě
+		echo "prošlo: ".$where." -> ";
+		print_r($router->validator->getVariables());
+		echo "<br>";
+		
+		// TODO: Získat z aktuální URL hodnoty vůči routě -> $router->validator->getVariables()
 		// TODO: Zavolat metodu se získanými parametry
 		
 	}
