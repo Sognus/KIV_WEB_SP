@@ -66,7 +66,7 @@ class Route
 	
 	public static function tryRoute()
 	{
-		Route::get("/","App\Controllers\TestController@target");
+		Route::get("/","App\Controllers\HelloWorldController@show");
 		Route::get("/{test}","App\Controllers\TestController@target", array("int"));
 		Route::get("/{test}","App\Controllers\TestController@target");
 		Route::get("/ahoj/{test}","App\Controllers\TestController@target");
@@ -96,34 +96,41 @@ class Route
 		// Ověří zda metoda požadavku je get
 		if($router->method != "GET")
 		{
+			// Nejedná se o požadavek typu GET -> NENÍ CHYBA
 			return false;
 		}
 		
 		// Validuje routu vůči aktuálnímu URL
 		if(!$router->validator->validate($where, $types))
 		{
+			// Nejedná se o požadovanou routu -> NENÍ CHYBA
 			return false;
 		}
 		
 		// Ověří zda daná třída existuje
 		if(!class_exists($class))
 		{
+			// Požadovaná třída neexistuje - CHYBA
 			return false;
 		}
 			
 		// Ověří zda v dané třídě existuje požadovaná metoda
 		if(!method_exists($class, $method))
 		{
+			// Metoda ve třídě neexistuje - CHYBA
 			return false;
 		}
 		
-		echo "prošlo: ".$where." -> ";
-		print_r($router->validator->getVariables());
-		echo "<br>";
+		$varz = $router->validator->getVariables();
 		
-		// TODO: Získat z aktuální URL hodnoty vůči routě -> $router->validator->getVariables()
-		// TODO: Zavolat metodu se získanými parametry
+		// Ověří, zda je možné zavolat požadovaný controller
+		if(!is_callable(array($class, $method)))
+		{
+			// Controller nebylo možné vyvolat
+			return false;
+		}
 		
+		call_user_func_array(array($class, $method), $varz);
 	}
 	
 	private function handle()

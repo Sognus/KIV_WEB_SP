@@ -422,6 +422,10 @@ class RouteValidator
 		/** Vrátí proměnné z URL získané dle předpisu wildcard */
 		public function getVariables()
 		{
+			if($this->wildcard == null)
+			{
+				$this->wildcard = array();
+			}
 			return $this->wildcard;
 		}
 		
