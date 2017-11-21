@@ -2,13 +2,17 @@
 
 namespace App\Controllers;
 
+use App\Views\View;
+
 class HelloWorldController
 {
 	
 	
 	public static function show()
 	{
-			echo sprintf("hello");
+			// "{$test}"
+			
+			View::make("hello.tpl", array("user"=>"Sognus"));
 		
 	}
 	
