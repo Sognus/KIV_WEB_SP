@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Configuration;
+
 use PDO;
 use PDOException;
 use Exception;
@@ -10,6 +12,18 @@ Class Database
 {
 	private static $connection;
 	
+
+	/** Připojí se do databáze za pomocí hodnot z konfigurace */
+	public static function connectINI()
+	{
+		$host = Configuration::get("DB_HOST");
+		$user = Configuration::get("DB_USERNAME");
+		$database = Configuration::get("DB_DATABASE"); 
+		$password = Configuration::get("DB_PASSWORD");
+		Database::connect($host, $user, $password, $database, 3306);
+	}
+	
+	/** Připojí se do databáze za pomocí ručně zadaných hodnot */
 	public static function connect($host, $user, $password, $database, $port = 3306)
 	{
 		// Připravení DSN

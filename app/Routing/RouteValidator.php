@@ -37,6 +37,17 @@ class RouteValidator
 			$this->parse();
 		}
 		
+		public function getWildcard()
+		{
+			if($this->wildcard == null)
+			{
+				return array();
+			}
+			return $this->wildcard;
+			
+			
+		}
+		
 		/** 
 		*	Validace Routy vůči aktuálnímu URL
 		*		Vrací true když URL odpovídá routě
@@ -117,9 +128,7 @@ class RouteValidator
 		*
 		*/	
 		private function parseBasicWildcard($route)
-		{
-			$br = "<br>";
-			
+		{			
 			parse_str(parse_url($route, PHP_URL_QUERY), $route_query);
 			parse_str(parse_url($this->raw, PHP_URL_QUERY), $raw_query);
 			

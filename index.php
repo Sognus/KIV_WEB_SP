@@ -3,15 +3,11 @@
 // Načtení Autoloaderu
 require __DIR__ . '/vendor/autoload.php';
 
-// Použití tříd
-use App\Database;
-use App\Configuration as C;
-use App\Routing\Route;
+// Načtení požadovaných tříd
+use App\Main;
 
-// Připojení k databázi
-Database::connect("127.0.0.1", "root", "", "web", 3306);
+// Zapnutí aplikace
+Main::start();
 
-$r = Route::getInstance();
-Route::tryRoute();
 
 ?>
