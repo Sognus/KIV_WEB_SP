@@ -1,0 +1,15 @@
+{
+  "name": "etdsolutions/tether",
+  "description": "Shim repository for Tether",
+  "homepage": "http://tether.io/",
+  "authors": [
+    {
+      "name": "Zack Bloom",
+      "email": "zackbloom@gmail.com"
+    },
+    {
+      "name": "Adam Schwartz",
+      "email": "adam.flynn.schwartz@gmail.com"
+    }
+  ]
+}
