@@ -26,7 +26,7 @@ class Twig
 		$twig_cache = __DIR__ . "/../../". Configuration::get("TWIG_CACHE");
 		
 		$this->loader = new Twig_Loader_Filesystem($twig_location);
-		$this->twig = new Twig_Environment($this->loader, array($twig_cache));
+		$this->twig = new Twig_Environment($this->loader, array(/* OBNOVIT PRO CACHE 'cache' =>$twig_cache*/));
 		
 		echo "</pre>";
 		
@@ -44,7 +44,16 @@ class Twig
 	
 	public static function render($template, $data = array())
 	{
-		echo self::getInstance()->twig->render($template, $data);
+		// Pokud soubor existuje, vykresli jeho obsah
+		if(file_exists(__DIR__ . "/../../" . Configuration::get("TWIG_TEMPLATES")."/".$template))
+		{
+			echo self::getInstance()->twig->render($template, $data);
+		}
+		else
+		{
+			// Pokud soubor neexistuje, vykresli chybovou hlášku
+			Twig::render("error.tpl", array("code"=>"A001", "message"=>"Twig template file does not exist!"));
+		}
 		
 	}
 	

@@ -86,10 +86,39 @@ class Route
 		
 	}
 	
+	public static function post($where, $target, $types = array())
+	{
+		$router = self::getInstance();
+		
+		if($router->method != "POST")
+		{
+			return false;
+		}
+		
+		return self::processRoute($where, $target, $types);
+		
+		
+	}
 	
 	public static function get($where, $target, $types = array())
 	{
-				
+		$router = self::getInstance();
+		
+		if($router->method != "GET")
+		{
+			return false;
+		}
+		
+		return self::processRoute($where, $target, $types);
+		
+		
+		
+	}
+	
+	private static function processRoute($where, $target, $types = array())
+	{
+		$router = self::getInstance();
+		
 		// Ověří zda cíl volání je ve správném tvaru
 		if(!strpos($target, "@"))
 		{
@@ -100,17 +129,7 @@ class Route
 		$class = $target_parts[0];
 		$method = $target_parts[1];
 		
-		
-		// Získání instance Route
-		$router = self::getInstance();
-		
-		// Ověří zda metoda požadavku je get
-		if($router->method != "GET")
-		{
-			return false;
-		}
-	
-			
+					
 		// Validuje routu vůči aktuálnímu URL
 		if(!$router->validator->validate($where, $types))
 		{
@@ -142,7 +161,6 @@ class Route
 		return true;
 		
 	}
-	
 
 	
 	

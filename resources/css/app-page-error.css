@@ -1,0 +1,11 @@
+/* CSS for page Error */
+
+body {
+	background-color: #dc3545;
+}
+
+.fixed-absolute{
+   position:absolute;
+   width:100%;
+   bottom:0;
+}

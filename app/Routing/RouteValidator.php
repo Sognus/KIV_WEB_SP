@@ -333,7 +333,16 @@ class RouteValidator
 					
 					
 				}
+				else
+				{
+					if($route_parts[$i] != $pattern_wildcard_parts[$i] )
+					{
+						// Část, která není wildcard nevyhovuje
+						return false;
+					}
+				}
 			}
+		
 			
 			// Vše v pořádku
 			return true;

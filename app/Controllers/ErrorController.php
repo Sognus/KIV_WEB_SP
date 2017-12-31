@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Views\Twig;
+
 class ErrorController
 {
 	
@@ -10,10 +12,15 @@ class ErrorController
 		switch($code)
 		{
 			case 404:
-				die("Chyba 404 - Stránka nenalezena");
-				break;	
+				Twig::render("error.tpl", array("code"=>404, "message"=>"Stránka nenalezena"));
+				die();
+				break;
+			case "D001":
+				Twig::render("error.tpl", array("code"=>"D001", "message"=>"Nastala chyba databáze, která znemožnila registraci uživatele"));
+				die();
 			default:
-				die("Chyba 500 - Interní chyba aplikace");
+				Twig::render("error.tpl", array("code"=>500, "message"=>"Interní chyba aplikace"));
+				die();
 		}
 		
 		

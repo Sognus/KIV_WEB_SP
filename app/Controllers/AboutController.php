@@ -4,12 +4,12 @@ namespace App\Controllers;
 
 use App\Views\Twig;
 
-class TestController
+class AboutController
 {
 	
-	public static function target()
+	public static function show()
 	{	
-		Twig::render("test.tpl");
+		Twig::render("about.tpl");
 		
 	}
 	

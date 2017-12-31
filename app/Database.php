@@ -82,6 +82,12 @@ Class Database
 		
 	}
 	
+	public static function numRows($result)
+	{
+		$res = $result->rowCount();
+		return $res;
+	}
+	
 	
 	
 	
