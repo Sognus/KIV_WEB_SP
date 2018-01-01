@@ -59,7 +59,7 @@ class User
 	}
 	
 	// Vrací jednu instanci třídy User 
-	public static function getUserByID($id)
+	public static function getUserByID($id, $safe = false)
 	{
 		$sql = "SELECT * FROM viteja_web_users WHERE LOWER(user) = LOWER( :id ) LIMIT 1";
 		
@@ -77,18 +77,16 @@ class User
 			return null;
 		}
 		
+		// Bezpečný get bez hesla
+		$assoc["password"] = $safe == true ? "" : $assoc["password"];
+		
 		return new self($assoc["user"], $assoc["name"], $assoc["password"], $assoc["email"], $assoc["account"]);
-		
-		
-		
-		
-		
 		
 	}
 	
 	
 	// Vrací jednu instanci třídy user
-	public static function getUserByName($name)
+	public static function getUserByName($name, $safe = false)
 	{
 		$sql = "SELECT * FROM viteja_web_users WHERE name = :name LIMIT 1";
 		
@@ -105,6 +103,9 @@ class User
 		{
 			return null;
 		}
+		
+		// Bezpečný get bez hesla
+		$assoc["password"] = $safe == true ? "" : $assoc["password"];
 		
 		return new self($assoc["user"], $assoc["name"], $assoc["password"], $assoc["email"], $assoc["account"]);
 	}

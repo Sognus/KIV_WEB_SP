@@ -175,13 +175,13 @@ class RouteValidator
 				}
 				
 			}
-
 			
 			// Pole s typy není stejně velké jako počet proměnných
 			if(count($types) != count($parsed_parts))
 			{
 				return false;
 			}
+			
 				
 			// Zahození associativních indexů
 			$parsed_parts = array_values($parsed_parts);
@@ -190,6 +190,8 @@ class RouteValidator
 			// Ověřuje zda všechny proměnné, co mají být numerické opravdu numerickou jsou
 			for($i = 0; $i < count($types); $i++)
 			{
+				
+				//echo "TYPES VS PARSED = ".$types[$i]." VS ".$parsed_parts[$i]."<br>";
 					
 				if($types[$i] == "int" && !is_numeric($parsed_parts[$i]))
 				{
@@ -203,6 +205,7 @@ class RouteValidator
 						 return false;
 				}
 			}
+			
 			
 			// Uložení proměnných získaných z wildcard
 			parse_str($route, $wildcard_names);
@@ -220,7 +223,6 @@ class RouteValidator
 				}
 			
 			}
-			
 				
 			return true;
 				

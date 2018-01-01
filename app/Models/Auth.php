@@ -8,44 +8,63 @@ use App\Models\User;
 class Auth
 {
 	
-  private static function getOpts()
-  {
-	$array = array();
-	$array["cost"] = 12;
-	
-	// Salt pro PHP starší než 7.0.0
-	if((version_compare(phpversion(), '7.0.0', '<')) )
-	{
-		$array["salt"] = mcrypt_create_iv(22, MCRYPT_DEV_URANDOM);
-	}
-	  
-	return $array;
-  }
-  
-  public static function login($username, $password)
-  {
-	  $user = User::getUserByName($username);
-	  
-	  // Ověření existence uživatele
-	  if($user == null)
+	  private static function getOpts()
 	  {
-		  return "Uživatel neexistuje!";
+		$array = array();
+		$array["cost"] = 12;
+		  
+		return $array;
+	  }
+  
+	  public static function login($username, $password)
+	  {
+		  $user = User::getUserByName($username);
+		  
+		 
+		  // Ověření existence uživatele
+		  if($user == null)
+		  {
+			  return "Uživatel neexistuje!";
+		  }
+		  
+		  // Ověření hesla
+		  if(password_verify($password,$user->getPassword()))
+		  {	  
+			// Přihlášení uživatele
+			$_SESSION["user"] = array();
+			$_SESSION["user"]["userID"] = $user->getID();
+			$_SESSION["user"]["userName"] = $user->getNickName();
+			$_SESSION["user"]["email"] = $user->getEmail();
+			$_SESSION["user"]["accountType"] = $user->getAccountType();
+		  
+			return true;
+		  }
+		  else
+		  {
+			  return "Heslo není správně!";
+		  }
+		  
+
+	  }
+	
+	  public static function getHash($heslo)
+	  {
+		return password_hash($heslo, PASSWORD_BCRYPT, self::getOpts());
 	  }
 	  
-	  // Ověření hesla
-	  if(!password_verify($password, $user->getPassword()))
+	  public static function isLogged()
 	  {
-		  return "Heslo není správné";
-	  }		  
+		  
+		if(!isset($_SESSION["user"]["userID"]) || empty($_SESSION["user"]["userID"]))
+		{
+			return false;
+		}
+		return true;
+		  
+	  }
 	  
-	  // Přihlášení uživatele
-	  $_SESSION["userID"] = $user->getID();
-	  
-	  return true;
-  }
-	
-  public static function getHash($heslo)
-  {
-    return password_hash($heslo, PASSWORD_BCRYPT, self::getOpts());
-  }
+	  public static function logout()
+	  {
+		  unset($_SESSION["user"]);
+	  }
 }

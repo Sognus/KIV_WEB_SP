@@ -74,7 +74,7 @@ class Route
 		
 		if(!self::getInstance()->found)
 		{
-			Route::error(404);
+			//Route::error(404);
 		}
 		
 	}
@@ -128,19 +128,19 @@ class Route
 		$target_parts = explode("@", $target);		
 		$class = $target_parts[0];
 		$method = $target_parts[1];
-		
-					
+			
 		// Validuje routu vůči aktuálnímu URL
 		if(!$router->validator->validate($where, $types))
 		{
 			return false;
 		}
-		
+			
 		// Ověří zda daná třída existuje
 		if(!class_exists($class))
 		{
 			return false;
 		}
+		
 			
 		// Ověří zda v dané třídě existuje požadovaná metoda
 		if(!method_exists($class, $method))
@@ -148,12 +148,14 @@ class Route
 			return false;
 		}
 		
+		
 		// Ošetření mnohonásobného volání
 		if($router->found)
 		{
 			return false;
 		}
 		
+				
 		// Zavolání funkce		
 		call_user_func_array(array($class, $method), $router->validator->getWildcard());
 		$router->found = true;

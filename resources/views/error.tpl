@@ -24,27 +24,17 @@
   <body id="page-top">
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-      <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top">Semetrální práce z předmětu KIV/WEB</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="index.php?page=about">O konferenci</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="index.php?page=register">Přihlášení</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="index.php?page=login">Registrace</a>
-            </li>
-          </ul>
-        </div>
+	{% include "base/menu.tpl" %}
+	
+	<header class="bg-danger text-white">
+      <div class="container text-center">
+        <h1>
+			{% if code is defined and message is defined%} {{code}} - {{message}} {% else%} A000 - Neznámá chyba aplikace {% endif %}
+		</h1>
+        <p class="lead align-self-center">
+		</p>
       </div>
-    </nav>
+    </header>
 	
     <!-- Footer -->
     <footer class="py-5 bg-dark fixed-absolute">
@@ -67,13 +57,3 @@
   </body>
 
 </html>
-
-    <header class="bg-danger text-white">
-      <div class="container text-center">
-        <h1>
-			{% if code is defined and message is defined%} {{code}} - {{message}} {% else%} A000 - Neznámá chyba aplikace {% endif %}
-		</h1>
-        <p class="lead align-self-center">
-		</p>
-      </div>
-    </header>

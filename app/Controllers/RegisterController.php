@@ -7,19 +7,33 @@ use App\Configuration;
 use App\Routing\Route;
 
 use App\Models\User;
+use App\Models\Auth;
 
 class RegisterController
 {
 	// Zpracování stránky register při volání metodou GET
 	public static function show()
 	{
-		Twig::render("register.tpl");
+		$logged = Auth::isLogged();
+		
+		// Pokud uživatel je již přihlášen, přesměrovat ho
+		if($logged)
+		{
+			header("Location: index.php?page=about");
+			die();
+		}
+		
+		$data = array();
+		$data["session"] = $_SESSION;
+		Twig::render("register.tpl", $data);
 	}
 	
 	// Zpracování stránky register při volání metodou POST
 	public static function post()
 	{
 		$data = array();
+		$data["session"] = $_SESSION;
+		$data = $_SESSION;
 		
 		// Základní ošetření, vytažení dat z _POST
 		foreach($_POST as $key => $value)

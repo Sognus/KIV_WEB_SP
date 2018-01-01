@@ -1,3 +1,5 @@
+{% set pageShort = "" %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,33 +23,16 @@
 	
 	{% block pageCSS %}
 	{% endblock %}
+	
+	{% block pageSpecialCSS%}
+	{%endblock %}
 
   </head>
 
   <body id="page-top">
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-      <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top">Semetrální práce z předmětu KIV/WEB</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="index.php?page=about">O konferenci</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="index.php?page=login">Přihlášení</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="index.php?page=register">Registrace</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+	{% include "base/menu.tpl"%}
 
     <header class="bg-success text-white">
       <div class="container text-center">
@@ -61,7 +46,7 @@
 	{% endblock %}
 	
     <!-- Footer -->
-    <footer class="py-5 bg-dark">
+    <footer class="py-5 bg-dark fixed-absolute">
       <div class="container">
         <p class="m-0 text-center text-white">Copyright &copy; Jakub Vítek 2017</p>
       </div>

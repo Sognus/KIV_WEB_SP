@@ -8,8 +8,10 @@ class AboutController
 {
 	
 	public static function show()
-	{	
-		Twig::render("about.tpl");
+	{		
+		$data = array();
+		$data["session"] = $_SESSION;
+		Twig::render("about.tpl", $data);
 		
 	}
 	

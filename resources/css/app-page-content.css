@@ -1,0 +1,24 @@
+.message
+{
+	margin-bottom: 32px;
+	margin-top: 32px;
+	
+}
+
+.separator
+{
+	margin: auto;
+	width: 90%;
+	border-color: #28a745;
+	
+}
+
+body {
+	background-color: #FFFFFF !important;
+}
+
+.pagination .active a
+{
+	color: white;
+	
+} 

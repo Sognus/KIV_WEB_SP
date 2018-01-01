@@ -12,12 +12,34 @@ class LoginController
 	
 	public static function show()
 	{
-		Twig::render("login.tpl");
+		$logged = Auth::isLogged();
+		
+		// Pokud uživatel je již přihlášen, přesměrovat ho
+		if($logged)
+		{
+			header("Location: index.php?page=about");
+			die();
+		}
+		
+		$data = array();
+		$data["session"] = $_SESSION;
+		Twig::render("login.tpl", $data);
 	}
 	
 	public static function post()
 	{
 		$data = array();
+		$data["session"] = $_SESSION;
+	
+		$logged = Auth::isLogged();
+	
+		// Pokud uživatel je již přihlášen, přesměrovat ho
+		if($logged)
+		{
+			header("Location: index.php?page=about");
+			die();
+		}
+	
 		
 		// Základní ošetření, vytažení dat z _POST
 		foreach($_POST as $key => $value)
@@ -65,14 +87,19 @@ class LoginController
 			if($chyba == false)
 			{
 				$auth = Auth::login($name, $password);
-							
-				if($auth != true)
+				
+				print_r($auth);
+				
+				if($auth === true)
 				{
-					$data["loginErrorMessage"] = "Nepodařilo se ověřit údaje! ".$auth;
+					echo "TRUUU";
+					$data["loginSuccess"] = true;	
+					$logged = true;
 				}
 				else
 				{
-					$data["loginSuccess"] = true;			
+					$data["loginErrorMessage"] = "Nepodařilo se ověřit údaje! ".$auth;
+					$logged = false;					
 				}
 				
 			}
@@ -80,6 +107,13 @@ class LoginController
 		}
 		
 		Twig::render("login.tpl", $data);
+		
+		// Přesměrování uživatele
+		if($logged === true)
+		{
+			header("Location: index.php?page=about");
+			die();
+		}
 		
 		
 	}

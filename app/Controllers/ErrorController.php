@@ -9,19 +9,29 @@ class ErrorController
 	
 	public static function show($code)
 	{
+		$data = array();
+		$template = "error.tpl";
+		
+		$data = array();
+		$data["session"] = $_SESSION;
+		
 		switch($code)
 		{
 			case 404:
-				Twig::render("error.tpl", array("code"=>404, "message"=>"Stránka nenalezena"));
-				die();
+				$data["code"] = 404;
+				$data["message"] = "Stránka nenalezena";
 				break;
 			case "D001":
-				Twig::render("error.tpl", array("code"=>"D001", "message"=>"Nastala chyba databáze, která znemožnila registraci uživatele"));
-				die();
+				$data["code"] = "D001";
+				$data["message"] = "Nastala chyba databáze, která znemožnila registraci uživatele";
+				break;
 			default:
-				Twig::render("error.tpl", array("code"=>500, "message"=>"Interní chyba aplikace"));
-				die();
+				$data["code"] = 500;
+				$data["message"] = "Interní chyba aplikace";
 		}
+		
+		Twig::render($template, $data);
+		die();
 		
 		
 		
