@@ -25,6 +25,10 @@ class ErrorController
 				$data["code"] = "D001";
 				$data["message"] = "Nastala chyba databáze, která znemožnila registraci uživatele";
 				break;
+			case 403:
+				$data["code"] = 403;
+				$data["message"] = "Nemáte dostatečná oprávnění k zobrazení této stránky";
+				break;
 			default:
 				$data["code"] = 500;
 				$data["message"] = "Interní chyba aplikace";

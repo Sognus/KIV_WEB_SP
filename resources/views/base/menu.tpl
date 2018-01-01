@@ -22,12 +22,26 @@
 				  <a class="nav-link js-scroll-trigger" href="index.php?page=register">Registrace</a>
 				</li>
 			{% else %}
+			
+	
+			  {# Odkazy pro administrátora #}
+			  {% if session.user.accountType == 2 %}
+			  <li class="nav-item">
+				  <a class="nav-link js-scroll-trigger" href="index.php?page=admin">Administrace</a>
+			  </li>
+			  {% endif%}
+			  
 			  {# Zde patří odkazy pro přihlášeného uživatele  #}
 			  
 			  <li class="nav-item">
 				  <a class="nav-link js-scroll-trigger" href="index.php?page=logout">Odhlásit</a>
-				</li>
+			  </li>
+			  
+
+			  
 			{% endif %}
+			
+			
           </ul>
         </div>
       </div>

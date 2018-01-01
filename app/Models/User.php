@@ -84,6 +84,22 @@ class User
 		
 	}
 	
+	// Vrací uživatele
+	public static function getUsersList()
+	{
+		$sql = "SELECT * FROM viteja_web_users WHERE 1";
+		
+		$result = Database::query($sql);
+		$rows = Database::numRows($result);
+		
+		if($rows < 1)
+		{
+			return array();
+		}
+		
+		return Database::assocAll($result);	
+	}
+	
 	
 	// Vrací jednu instanci třídy user
 	public static function getUserByName($name, $safe = false)
@@ -133,6 +149,45 @@ class User
 		// Uživatele se podařilo registrovat
 		return $status;
 		
+		
+	}
+	
+	public static function isAdministrator($id)
+	{
+		$user = self::getUserByID($id);
+		
+		if($user == null)
+		{
+			return false;
+		}
+		
+		return ($user->getAccountType() === 2);
+		
+	}
+	
+	public static function changeAccountType($userID, $type)
+	{
+		if(!in_array($type, array(0, 1, 2)))
+		{
+			return false;
+		}
+		
+		$user = self::getUserByID($userID);
+		
+		if($user == null)
+		{
+			return false;
+		}
+		
+		$sql = "UPDATE `viteja_web_users` SET `account` = :type WHERE `viteja_web_users`.`user` = :id ;";
+		
+		$data = array
+		(
+			":id" => $userID,
+			":type" => $type,
+		);
+		
+		return (Database::query($sql, $data) !== false);
 		
 	}
 	

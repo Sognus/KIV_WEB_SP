@@ -17,3 +17,9 @@ header {
 section {
   padding: 150px 0;
 }
+
+.no-margin-top
+{
+	margin-top: 0px !important;
+	
+}
