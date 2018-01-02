@@ -7,10 +7,13 @@
         <div class="collapse navbar-collapse" id="navbarResponsive2">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger text-primary" href="index.php?page=admin&part=users">Správa oprávnění uživatelů</a>
+              <a class="nav-link js-scroll-trigger text-primary" href="index.php?page=admin&part=users">Uživatelé</a>
             </li>
 			<li class="nav-item">
-              <a class="nav-link js-scroll-trigger text-primary" href="index.php?page=admin">XX2</a>
+              <a class="nav-link js-scroll-trigger text-primary" href="index.php?page=admin&part=posts">Příspěvky</a>
+            </li>
+			<li class="nav-item">
+              <a class="nav-link js-scroll-trigger text-primary" href="index.php?page=admin&part=reviews">Recenze</a>
             </li>
             			
           </ul>

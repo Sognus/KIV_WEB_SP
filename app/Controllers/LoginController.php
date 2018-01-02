@@ -98,7 +98,7 @@ class LoginController
 				}
 				else
 				{
-					$data["loginErrorMessage"] = "Nepodařilo se ověřit údaje! ".$auth;
+					$data["loginErrorMessage"] = $auth;
 					$logged = false;					
 				}
 				

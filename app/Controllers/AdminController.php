@@ -7,6 +7,8 @@ use App\Views\Twig;
 
 use App\Models\Auth;
 use App\Models\User;
+use App\Models\Review;
+use App\Models\Post;
 
 class AdminController
 {
@@ -39,6 +41,23 @@ class AdminController
 				$template = "admin-users.tpl";
 				$data["users"] = User::getUsersList();
 				break;
+			case "reviews":
+				$template = "admin-reviews.tpl";
+				$data["reviews"] = Review::getReviewList();				
+				break;
+			case "posts":
+				$template = "admin-posts.tpl";
+				$data["posts"] = Post::getAllPostsForAdmin();
+				$data["reviewers"] = Review::getReviewersList();	
+	
+				/*
+				echo "<pre>";
+				print_r($data);
+				echo "</pre>";
+				die();
+				//*/
+				
+				break;
 			default:
 				$template = "admin.tpl";		
 		}
@@ -51,8 +70,10 @@ class AdminController
 	
 	public static function post()
 	{
+		$sender = User::getUserByID($_SESSION["user"]["userID"]);
+		$logged = $sender !== null && $sender->getAccountType() == 2;
 		
-		if(isset($_POST))
+		if(isset($_POST) && $logged)
 		{
 			
 			// Změnit uživatele na administrátora
@@ -83,9 +104,88 @@ class AdminController
 				}	
 			}
 			
+			if(isset($_POST["user-ban"]))
+			{
+				User::banUserByID($_POST["user-ban"]);
+			}
+			
+			if(isset($_POST["user-unban"]))
+			{
+				User::unbanUserByID($_POST["user-unban"]);
+			}
+			
+			if(isset($_POST["user-delete"]))
+			{
+				User::deleteUserByID($_POST["user-delete"]);
+			}
+				
+			
+			if(isset($_POST["review-delete"]))
+			{
+				Review::deleteReviewByID($_POST["review-delete"]);
+			}
+			
+			if(isset($_POST["posts-new-reviewer"]))
+			{				
+				$postID = $_POST["posts-new-reviewer"];
+				$rewID = $_POST["post-new-reviewer-select"];
+								
+				Review::createNew($postID, $rewID);
+			}
+			
+			if(isset($_POST["post-reviewer-remove"]))
+			{
+				$rewID = $_POST["post-reviewer-remove"];
+				$postID = $_POST["post-reviewer-remove-post"];
+				
+				Review::deleteReview($postID, $rewID);
+			}
+			
+			unset($_POST);
+			
 		}
 		
-		self::show("users");
+		$args = func_get_args();
+		$template = "admin.tpl";
+		
+		// Standardní hlavička
+		$data = array();
+		$data["session"] = $_SESSION;
+			
+		// Ověření uživatelských práv
+		if(!isset($_SESSION["user"]["userID"]) || !User::isAdministrator($_SESSION["user"]["userID"]))
+		{
+			Route::error(403);
+			die();
+		}
+		
+		// Rozhodnutí template, která se má načíst
+		$part = isset($args[0]) ? $args[0] : "none";
+		
+		switch($part)
+		{
+			case "none":
+				$template = "admin.tpl";
+				break;
+			case "users":
+				$template = "admin-users.tpl";
+				$data["users"] = User::getUsersList();
+				break;
+			case "reviews":
+				$template = "admin-reviews.tpl";
+				$data["reviews"] = Review::getReviewList();				
+				break;
+			case "posts":
+				$template = "admin-posts.tpl";
+				$data["posts"] = Post::getAllPostsForAdmin();
+				$data["reviewers"] = Review::getReviewersList();
+				break;
+			default:
+				$template = "admin.tpl";		
+		}
+		
+		// Vykreslení stránky
+		Twig::render($template, $data);
 		
 		
 	}

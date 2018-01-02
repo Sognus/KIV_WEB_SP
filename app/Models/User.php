@@ -61,7 +61,7 @@ class User
 	// Vrací jednu instanci třídy User 
 	public static function getUserByID($id, $safe = false)
 	{
-		$sql = "SELECT * FROM viteja_web_users WHERE LOWER(user) = LOWER( :id ) LIMIT 1";
+		$sql = "SELECT * FROM viteja_web_users WHERE LOWER(user) = LOWER( :id ) AND deleted != '1' LIMIT 1";
 		
 		$where = array
 		(
@@ -87,7 +87,7 @@ class User
 	// Vrací uživatele
 	public static function getUsersList()
 	{
-		$sql = "SELECT * FROM viteja_web_users WHERE 1";
+		$sql = "SELECT * FROM viteja_web_users WHERE deleted != '1'";
 		
 		$result = Database::query($sql);
 		$rows = Database::numRows($result);
@@ -97,14 +97,22 @@ class User
 			return array();
 		}
 		
-		return Database::assocAll($result);	
+		$assoc = Database::assocAll($result);
+		
+		for($i = 0; $i < count($assoc); $i++)
+		{
+			$assoc[$i]["banned"] = User::isBlocked($assoc[$i]["user"]);
+		}
+		
+		
+		return $assoc;	
 	}
 	
 	
 	// Vrací jednu instanci třídy user
 	public static function getUserByName($name, $safe = false)
 	{
-		$sql = "SELECT * FROM viteja_web_users WHERE name = :name LIMIT 1";
+		$sql = "SELECT * FROM viteja_web_users WHERE name = :name AND deleted != '1' LIMIT 1";
 		
 		$where = array
 		(
@@ -165,6 +173,23 @@ class User
 		
 	}
 	
+	public static function isBlocked($id)
+	{
+		$sql = "SELECT * FROM viteja_web_users WHERE user = :id AND blocked = '1' LIMIT 1";
+		
+		$where = array
+		(
+			":id" => $id,
+		);
+		
+		$result = Database::query($sql, $where);
+		$rows = Database::numRows($result);
+		
+		return ($rows > 0);
+		
+		
+	}
+	
 	public static function changeAccountType($userID, $type)
 	{
 		if(!in_array($type, array(0, 1, 2)))
@@ -188,6 +213,46 @@ class User
 		);
 		
 		return (Database::query($sql, $data) !== false);
+		
+	}
+	
+	public static function banUserByID($id)
+	{	
+		$sql = "UPDATE `viteja_web_users` SET `blocked` = '1' WHERE `viteja_web_users`.`user` = :id ;";
+		
+		$where = array
+		(
+			":id" => $id,
+		);
+		
+		Database::query($sql, $where);
+		
+	}
+	
+	public static function unbanUserByID($id)
+	{	
+		$sql = "UPDATE `viteja_web_users` SET `blocked` = '0' WHERE `viteja_web_users`.`user` = :id ;";
+		
+		$where = array
+		(
+			":id" => $id,
+		);
+		
+		Database::query($sql, $where);
+		
+	}
+	
+	public static function deleteUserByID($id)
+	{
+		
+		$sql = "UPDATE `viteja_web_users` SET `deleted` = '1' WHERE `viteja_web_users`.`user` = :id ;";
+		
+		$where = array
+		(
+			":id" => $id,
+		);
+		
+		Database::query($sql, $where);
 		
 	}
 	

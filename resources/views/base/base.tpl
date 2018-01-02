@@ -17,6 +17,9 @@
 
     <!-- Custom styles for this template -->
     <link href="resources/css/scrolling-nav.css" rel="stylesheet">
+
+	<!-- Base CSS -->
+	<link href="resources/css/app-base.css" rel="stylesheet">
 	
 	<!-- Font awesome icons -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
@@ -29,24 +32,28 @@
 
   </head>
 
-  <body id="page-top">
+  <body class="Site" id="page-top">
 
     <!-- Navigation -->
-	{% include "base/menu.tpl"%}
+	<div class="Site-header">
+		{% include "base/menu.tpl"%}
 
-    <header class="bg-success text-white">
-      <div class="container text-center">
-        <h1>Konference - Člověk a příroda</h1>
-        <p class="lead align-self-center">
-		</p>
-      </div>
-    </header>
+		<header class="bg-success text-white">
+		  <div class="container text-center">
+			<h1>Konference - Člověk a příroda</h1>
+			<p class="lead align-self-center">
+			</p>
+		  </div>
+		</header>
+	</div>
 	
+	<main class="Site-content">
 	{% block content %}
 	{% endblock %}
+	</main>
 	
     <!-- Footer -->
-    <footer class="py-5 bg-dark fixed-absolute">
+    <footer class="Site-footer py-5 bg-dark fixed-absolute">
       <div class="container">
         <p class="m-0 text-center text-white">Copyright &copy; Jakub Vítek 2017</p>
       </div>

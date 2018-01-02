@@ -24,7 +24,12 @@ class Auth
 		  // Ověření existence uživatele
 		  if($user == null)
 		  {
-			  return "Uživatel neexistuje!";
+			  return "Nepodařilo se ověřit údaje. Uživatel neexistuje!";
+		  }
+		  
+		  if(User::isBlocked($user->getID()))
+		  {
+			  return "Tento účet byl zablokován!";
 		  }
 		  
 		  // Ověření hesla
@@ -41,7 +46,7 @@ class Auth
 		  }
 		  else
 		  {
-			  return "Heslo není správně!";
+			  return "Nepodařilo se ověřit údaje. Heslo není správně!";
 		  }
 		  
 

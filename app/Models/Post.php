@@ -117,6 +117,74 @@ class Post
 		
 	}
 	
+	public static function getPostAverage($id)
+	{
+		$sql = 
+		"
+			SELECT
+				viteja_web_reviews.*, viteja_web_users.name as authorName, viteja_web_posts.title, viteja_web_users_alias.name as reviewerName
+			FROM
+				`viteja_web_reviews`
+			INNER JOIN 
+				viteja_web_posts ON viteja_web_reviews.post=viteja_web_posts.post
+			INNER JOIN 
+				viteja_web_users ON viteja_web_posts.author = viteja_web_users.user
+			INNER JOIN 
+				viteja_web_users_alias ON viteja_web_users_alias.user = viteja_web_reviews.reviewer
+			WHERE 
+            	viteja_web_reviews.originality != ''
+            AND
+                viteja_web_reviews.subject != ''
+            AND
+                viteja_web_reviews.technical != ''
+            AND
+                viteja_web_reviews.language != ''
+			AND
+				viteja_web_reviews.deleted = 0
+            AND 
+            	viteja_web_reviews.post = :id
+		";
+		
+		$where = array
+		(
+			":id" => $id,
+		);
+		
+		$result = Database::query($sql, $where);
+		$rows = Database::numRows($result);
+		
+		// 3 = minimální počet recenzentů
+		if($rows < 1)
+		{
+			return "Příspěvek zatím nebyl hodnocen";
+		}
+		
+		$assoc = Database::assocAll(Database::query($sql, $where));
+		$calcOuter = 0;
+		$reviews = 0;
+		
+		for($i = 0; $i < count($assoc); $i++)
+		{
+			$reviews++;
+			
+			$calc = 0;
+			
+			$calc = $calc + $assoc[$i]["originality"];
+			$calc = $calc + $assoc[$i]["subject"];
+			$calc = $calc + $assoc[$i]["technical"];
+			$calc = $calc + $assoc[$i]["language"];
+			
+			$calc = $calc / 4;
+			 
+			
+			$calcOuter = $calcOuter + $calc;
+		}
+		
+		return ($calcOuter / $reviews);		
+		
+		
+	}
+	
 	public static function getPagePosts($page)
 	{
 		// Dotaz
@@ -224,6 +292,40 @@ class Post
 		{
 			return Database::assocAll(Database::query($sql, $where));
 		}
+		
+	}
+	
+	public static function getAllPostsForAdmin()
+	{
+		$sql = "
+			SELECT viteja_web_posts.*, viteja_web_users.name as authorName
+			FROM `viteja_web_posts`
+			INNER JOIN viteja_web_users
+				ON viteja_web_posts.author = viteja_web_users.user;
+			";
+		
+		$assoc = Database::assocAll(Database::query($sql));
+		
+		for($i = 0; $i < count($assoc); $i++)
+		{
+			$id = $assoc[$i]["post"];
+			
+			$assoc[$i]["reviewers"] = Review::getReviewersListByPost($id);
+			$assoc[$i]["average"] = Post::getPostAverage($id);
+						
+			for($y = 0; $y < count($assoc[$i]["reviewers"]); $y++)
+			{
+				$rev = Review::getReviewAverageByID($assoc[$i]["reviewers"][$y]["review"]);
+				
+					$assoc[$i]["reviewers"][$y]["average"] = $rev;
+			
+				
+			}
+					
+		}
+		
+		
+		return $assoc;
 		
 	}
 
