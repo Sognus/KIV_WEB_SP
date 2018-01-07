@@ -12,6 +12,7 @@ class PostController
 	public static function show()
 	{
 		$data = array();
+		$data["session"] = $_SESSION;
 		$args = func_get_args();
 		
 		if(isset($args[0]) && is_numeric($args[0]) && $args[0] > 0)

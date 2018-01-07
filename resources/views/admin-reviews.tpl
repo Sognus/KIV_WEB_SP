@@ -11,8 +11,8 @@
 					<p class="lead col-lg-2 text-dark font-weight-normal">Příspěvek</p>
 					<p class="lead col-lg-2 text-dark font-weight-normal">Autor</p>
 					<p class="lead col-lg-2 text-dark font-weight-normal">Recenzent</p>
-					<p class="lead col-lg-2 text-dark font-weight-normal">Hodnocení</p>
-					<p class="lead col-lg-4 text-dark font-weight-normal text-right">Akce</p>				
+					<p class="lead col-lg-3 text-dark font-weight-normal">Hodnocení</p>
+					<p class="lead col-lg-3 text-dark font-weight-normal text-right">Akce</p>				
 				</div>
 		</div>
 			
@@ -21,9 +21,9 @@
 							<p class="lead col-lg-2">{{ review.title }}</p>
 							<p class="lead col-lg-2">{{ review.authorName }}</p>
 							<p class="lead col-lg-2">{{ review.reviewerName }}</p>
-							<p class="lead col-lg-2">{{ review.average }}</p>
+							<p class="lead col-lg-3">{% if review.average != 0 %}{{ review.average|number_format(2) }}{% else %} Recenzent nehodnotil {% endif %}</p>
 						
-							<form class="form-horizontal col-lg-4 text-right" role="form" method="POST" action="index.php?page=admin&part=reviews">
+							<form class="form-horizontal col-lg-3 text-right" role="form" method="POST" action="index.php?page=admin&part=reviews">
 								<button type="submit" name="review-delete" value="{{review.review}}" id="review-dele" title="Smazat recenzi" class="btn btn-danger "><i class="fa fa-trash"></i> Smazat recenzi</button>
 							</form>
 						</div>

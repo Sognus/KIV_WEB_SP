@@ -29,6 +29,9 @@
 	
 	{% block pageSpecialCSS%}
 	{%endblock %}
+	
+	{% block pageTopJS %}
+	{% endblock %}
 
   </head>
 

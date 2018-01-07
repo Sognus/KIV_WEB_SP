@@ -200,14 +200,6 @@ class Review
 			INNER JOIN 
 				viteja_web_users_alias ON viteja_web_users_alias.user = viteja_web_reviews.reviewer
 			WHERE 
-            	viteja_web_reviews.originality != ''
-            AND
-                viteja_web_reviews.subject != ''
-            AND
-                viteja_web_reviews.technical != ''
-            AND
-                viteja_web_reviews.language != ''
-			AND
 				viteja_web_reviews.deleted = 0
 		";
 		
@@ -217,12 +209,12 @@ class Review
 		{
 			$calc = 0;
 			
-			$calc = $calc + $assoc[$i]["originality"];
-			$calc = $calc + $assoc[$i]["subject"];
-			$calc = $calc + $assoc[$i]["technical"];
-			$calc = $calc + $assoc[$i]["language"];
+			@$calc = $calc + $assoc[$i]["originality"];
+			@$calc = $calc + $assoc[$i]["subject"];
+			@$calc = $calc + $assoc[$i]["technical"];
+			@$calc = $calc + $assoc[$i]["language"];
 			
-			$calc = $calc / 4;
+			@$calc = $calc / 4;
 			
 			$assoc[$i]["average"] =  $calc;
 		}

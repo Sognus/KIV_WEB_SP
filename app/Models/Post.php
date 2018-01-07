@@ -69,7 +69,7 @@ class Post
 		return User::getUserByID($this->author);
 	}
 	
-	public static function getPostByID($id)
+	public static function getPostByID($id, $asArr = false)
 	{
 		$sql = "SELECT * FROM `viteja_web_posts` WHERE post = :id LIMIT 1";
 		
@@ -87,9 +87,35 @@ class Post
 			return null;
 		}
 		
+		if($asArr)
+		{
+			return $assoc;
+		}
+		
 		return new self($assoc["post"], $assoc["author"], $assoc["title"], $assoc["text"], $assoc["published"]);
 		
 		
+	}
+	
+	public static function postExist($id)
+	{
+		$sql = "SELECT * FROM `viteja_web_posts` WHERE post = :id LIMIT 1";
+		
+		$where = array
+		(
+			":id" => $id, 
+		);
+		
+		$result = Database::query($sql, $where);
+		$rows = Database::numRows($result);
+		
+		if($rows < 1)
+		{
+			return false;
+		}
+		
+		return true;
+
 	}
 	
 	public static function getAllPosts()
@@ -114,6 +140,94 @@ class Post
 		
 		// Vrácení dat
 		return $posts;
+		
+	}
+	
+	public static function getAllPostsUser($userID)
+	{
+		// Dotaz
+		$sql = "SELECT * FROM `viteja_web_posts` WHERE author = :author AND state != 'deleted' ORDER BY post DESC";
+		
+		$where = array
+		(
+		 ":author" => $userID,
+		);
+		
+		$posts = Database::assocAll(Database::query($sql, $where));
+		
+		
+		// Zpracování a formátování dat
+		for($i = 0; $i < count($posts); $i++)
+		{
+			// Výpočet známky
+			$posts[$i]["average"] = self::getPostAverage($posts[$i]["post"]); 
+		}	
+
+		return $posts;
+		
+	}
+	
+	public static function isPostOwner($post,$who)
+	{
+		$sql = "SELECT * FROM `viteja_web_posts` WHERE author = :author AND post = :post LIMIT 1";
+		
+		$where = array
+		(
+			":author" => $who,
+			":post" => $post,
+		);
+		
+		$result = Database::query($sql, $where);
+		$rows = Database::numRows($result);
+		
+		if($rows > 0)
+		{
+			return true;
+		}
+		
+		return false;
+		
+		
+	}
+	
+	public static function setPostStatusByID($id, $status)
+	{
+		$sql = "UPDATE `viteja_web_posts` SET `state` = :status WHERE `viteja_web_posts`.`post` = :id ;";
+		
+		$where = array
+		(
+			":id" => $id,
+			":status" => $status,
+		);
+		
+		Database::query($sql, $where);	
+		
+		if($status == "approved")
+		{
+			$sql2 = "UPDATE `viteja_web_posts` SET `published` = NOW() WHERE `viteja_web_posts`.`post` = :id ";
+			
+			$where2 = array
+			(
+				":id" => $id,
+			);
+			
+			Database::query($sql2, $where2);
+		}
+		
+	}
+	
+	public static function deletePostByID($id)
+	{
+		$sql = "UPDATE `viteja_web_posts` SET `state` = 'deleted' WHERE `viteja_web_posts`.`post` = :id ;";
+		
+		$where = array
+		(
+			":id" => $id,
+		);
+		
+		
+		Database::query($sql, $where);
+		
 		
 	}
 	
@@ -188,7 +302,7 @@ class Post
 	public static function getPagePosts($page)
 	{
 		// Dotaz
-		$sql = "SELECT * FROM `viteja_web_posts` WHERE published IS NOT NULL ORDER BY published DESC, post DESC LIMIT :page , :limit ";
+		$sql = "SELECT * FROM `viteja_web_posts` WHERE published IS NOT NULL AND state = 'approved' ORDER BY published DESC, post DESC LIMIT :page , :limit";
 		
 		$limit = Configuration::get("POST_PAGE_COUNT");
 		
@@ -221,7 +335,7 @@ class Post
 	
 	public static function getPageCount()
 	{
-		$sql = "SELECT * FROM `viteja_web_posts` WHERE published IS NOT NULL";
+		$sql = "SELECT * FROM `viteja_web_posts` WHERE published IS NOT NULL AND state = 'approved' ";
 		
 		$result = Database::query($sql);
 		$rows = Database::numRows($result);
@@ -301,7 +415,9 @@ class Post
 			SELECT viteja_web_posts.*, viteja_web_users.name as authorName
 			FROM `viteja_web_posts`
 			INNER JOIN viteja_web_users
-				ON viteja_web_posts.author = viteja_web_users.user;
+				ON viteja_web_posts.author = viteja_web_users.user
+			WHERE 
+				viteja_web_posts.state != 'deleted';
 			";
 		
 		$assoc = Database::assocAll(Database::query($sql));
@@ -327,6 +443,80 @@ class Post
 		
 		return $assoc;
 		
+	}
+	
+	public static function createNewPost($author, $title, $text)
+	{
+		$sql = 
+		"
+		INSERT INTO `viteja_web_posts` (`post`, `author`, `title`, `text`, `state`, `published`) VALUES (NULL, :id , :title , :text , 'review', NULL);
+		";
+		
+		$data = array
+		(
+			":id" => $author,
+			":title" => $title,
+			":text" => $text,
+		);
+		
+		Database::query($sql, $data);
+		
+		
+	}
+	
+	public static function postAddFiles($post, $file)
+	{
+		$sql = 
+		"
+		INSERT INTO `viteja_web_posts_files` (`post`, `filename`) VALUES ( :post , :file );
+		";
+		
+		$data = array
+		(
+			":post" => $post,
+			":file" => $file,
+		);
+		
+		Database::query($sql, $data);
+	}
+	
+	public static function postRemoveFile($post, $name)
+	{
+		$sql = 
+		"
+		DELETE FROM `viteja_web_posts_files` WHERE `viteja_web_posts_files`.`post` = :post AND LOWER(`viteja_web_posts_files`.`filename`) = LOWER( :name );
+		";
+		
+		$where = array
+		(
+			":post" => $post,
+			":name" => $name,
+		);
+		
+		Database::query($sql, $where);
+	}
+	
+	public static function updatePost($postID, $title, $text)
+	{
+		$sql = 
+		"
+		UPDATE viteja_web_posts 
+		SET
+			title = :title,
+			text = :text
+		WHERE
+			`viteja_web_posts`.`post` = :id
+		";
+		
+		// Where + data
+		$whta = array
+		(
+			":title" => $title,
+			":text" => $text,
+			":id" => $postID,
+		);
+		
+		Database::query($sql, $whta);
 	}
 
 	

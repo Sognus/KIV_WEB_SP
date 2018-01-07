@@ -11,16 +11,46 @@
 						<div class="row">
 							<p class="lead col-lg-3 text-dark font-weight-normal">Název příspěvku: </p>
 							<p class="lead col-lg-6 text-dark">{{post.title}}</p>
+							
+							{% if post.deleted != "1" %}
+								<form class="form-horizontal col-lg-3 text-right" role="form" method="POST" action="index.php?page=admin&part=posts">
+									<button type="submit" name="post-delete" value="{{post.post}}" id="post-approve" title="Odmítnout příspěvek" class="btn btn-danger"><i class="fa fa-trash"></i> smazat</button>
+								</form>
+							{% else %}
+								<div class="col-lg-3 text-right">
+									<button type="submit" name="post-delete" id="post-approve" title="Odmítnout příspěvek" class="btn btn-danger" disabled><i class="fa fa-trash"></i> smazat</button>
+								</div>
+							{% endif %}
 						</div>
 						
 						<div class="row">
 							<p class="lead col-lg-3 text-dark font-weight-normal">Autor příspěvku: </p>
 							<p class="lead col-lg-6 text-dark">{{post.authorName}}</p>
+							
+							{% if post.state is defined and post.state != "rejected" %}
+								<form class="form-horizontal col-lg-3 text-right" role="form" method="POST" action="index.php?page=admin&part=posts">
+									<button type="submit" name="post-reject" value="{{post.post}}" id="post-approve" title="Odmítnout příspěvek" class="btn btn-danger"><i class="fa fa-ban"></i> odmítnout</button>
+								</form>
+							{% else %}
+								<div class="col-lg-3 text-right">
+									<button type="submit" name="post-reject" id="post-approve" title="Odmítnout příspěvek" class="btn btn-danger" disabled><i class="fa fa-ban"></i> odmítnout</button>
+								</div>
+							{% endif %}
 						</div>
 						
 						<div class="row">
 							<p class="lead col-lg-3 text-dark font-weight-normal">Celkové hodnocení: </p>
 							<p class="lead col-lg-6 text-dark">{% if post.average != 0 %}{{post.average|number_format(2)}}{% else %}Příspěvek není ohodnocen{% endif %}</p>
+							
+							{% if post.state is defined and post.state != "approved" %}
+								<form class="form-horizontal col-lg-3 text-right" role="form" method="POST" action="index.php?page=admin&part=posts">
+									<button type="submit" name="post-approve" value="{{post.post}}" id="post-approve" title="Schválit příspěvek" class="btn btn-success"><i class="fa fa-check"></i> schválit</button>
+								</form>
+							{% else %}
+								<div class="col-lg-3 text-right">
+									<button type="submit" name="post-approve" id="post-approve" title="Schválit příspěvek" class="btn btn-success" disabled><i class="fa fa-check"></i> schválit</button>
+								</div>
+							{% endif %}
 						</div>
 						
 						<br>

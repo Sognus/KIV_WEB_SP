@@ -44,6 +44,14 @@ class AdminController
 			case "reviews":
 				$template = "admin-reviews.tpl";
 				$data["reviews"] = Review::getReviewList();				
+				
+				/*
+				echo "<pre>";
+				print_r($data);
+				echo "</pre>";
+				die();
+				//*/
+				
 				break;
 			case "posts":
 				$template = "admin-posts.tpl";
@@ -139,6 +147,28 @@ class AdminController
 				$postID = $_POST["post-reviewer-remove-post"];
 				
 				Review::deleteReview($postID, $rewID);
+			}
+			
+			if(isset($_POST["post-delete"]))
+			{
+				$id = $_POST["post-delete"];
+				
+				Post::deletePostByID($id);
+			}
+			
+			if(isset($_POST["post-reject"]))
+			{
+				$id = $_POST["post-reject"];
+				
+				Post::setPostStatusByID($id, "rejected");
+				
+			}
+			
+			if(isset($_POST["post-approve"]))
+			{
+				$id = $_POST["post-approve"];
+				
+				Post::setPostStatusByID($id, "approved");
 			}
 			
 			unset($_POST);

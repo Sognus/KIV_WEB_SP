@@ -88,11 +88,8 @@ class LoginController
 			{
 				$auth = Auth::login($name, $password);
 				
-				print_r($auth);
-				
 				if($auth === true)
 				{
-					echo "TRUUU";
 					$data["loginSuccess"] = true;	
 					$logged = true;
 				}

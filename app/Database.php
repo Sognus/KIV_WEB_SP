@@ -89,6 +89,11 @@ Class Database
 		return $res;
 	}
 	
+	public static function lastInsertID()
+	{
+		return self::$connection->lastInsertId();
+	}
+	
 	
 	
 	

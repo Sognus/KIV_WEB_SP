@@ -4,6 +4,9 @@ namespace App\Views;
 
 use App\Configuration;
 
+use App\Models\Auth;
+use App\Models\User;
+
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
@@ -44,6 +47,8 @@ class Twig
 	
 	public static function render($template, $data = array())
 	{
+		self::refreshSessionRender();
+		
 		// Pokud soubor existuje, vykresli jeho obsah
 		if(file_exists(__DIR__ . "/../../" . Configuration::get("TWIG_TEMPLATES")."/".$template))
 		{
@@ -55,6 +60,21 @@ class Twig
 			Twig::render("error.tpl", array("code"=>"A001", "message"=>"Twig template file does not exist!"));
 		}
 		
+	}
+	
+	private static function refreshSessionRender()
+	{
+		$logged = Auth::isLogged();
+		if($logged)
+		{
+			$user = User::getUserByID($_SESSION["user"]["userID"]);
+			
+			$_SESSION["user"] = array();
+			$_SESSION["user"]["userID"] = $user->getID();
+			$_SESSION["user"]["userName"] = $user->getNickName();
+			$_SESSION["user"]["email"] = $user->getEmail();
+			$_SESSION["user"]["accountType"] = $user->getAccountType();
+		}
 	}
 	
 	

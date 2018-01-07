@@ -23,7 +23,14 @@
 				</li>
 			{% else %}
 			
-	
+			  <li class="nav-item">
+				  <a class="nav-link js-scroll-trigger" href="index.php?page=create">Napsat příspěvek</a>
+			  </li>
+
+			  <li class="nav-item">
+				  <a class="nav-link js-scroll-trigger" href="index.php?page=user">Účet</a>
+			  </li>				  
+			
 			  {# Odkazy pro administrátora #}
 			  {% if session.user.accountType == 2 %}
 			  <li class="nav-item">

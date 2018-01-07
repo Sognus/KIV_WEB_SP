@@ -19,3 +19,11 @@
     </section>
 	
 {% endblock%}
+
+{% block pageCSS %}
+		
+{% endblock %}
+
+{% block pageJS %}
+
+{% endblock %}

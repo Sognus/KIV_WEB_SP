@@ -80,10 +80,6 @@
 	
 	<link href="resources/css/app-page-content.css" rel="stylesheet">
 	
-	{% if pageShort is defined and pageShort == "yes" %}
-		<link href="resources/css/app-page-error.css" rel="stylesheet">
-	{% endif %}
-		
 {% endblock %}
 
 {% block pageJS %}

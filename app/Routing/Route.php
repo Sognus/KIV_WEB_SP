@@ -74,7 +74,7 @@ class Route
 		
 		if(!self::getInstance()->found)
 		{
-			//Route::error(404);
+			Route::error(404);
 		}
 		
 	}
