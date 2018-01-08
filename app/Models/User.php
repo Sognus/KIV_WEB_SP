@@ -160,6 +160,19 @@ class User
 		
 	}
 	
+	public static function isReviewer($id)
+	{
+		$user = self::getUserByID($id);
+		
+		if($user == null)
+		{
+			return false;
+		}
+		
+		return ($user->getAccountType() >= 1);
+				
+	}
+	
 	public static function isAdministrator($id)
 	{
 		$user = self::getUserByID($id);

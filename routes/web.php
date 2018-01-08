@@ -13,6 +13,8 @@ Route::post("/create", "App\Controllers\PostCreateController@post");
 Route::post("/user", "App\Controllers\UserController@post");
 Route::post("/user/{part}", "App\Controllers\UserController@post", array("string"));
 Route::post("/user/edit/{id}", "App\Controllers\UserController@editPost", array("string"));
+Route::post("/reviewer", "App\Controllers\ReviewerController@post");
+Route::post("/reviewer/list", "App\Controllers\ReviewerController@listPost");
 
 // Routování pro pěkné URL - metoda GET
 Route::get("/","App\Controllers\AboutController@show");
@@ -28,6 +30,8 @@ Route::get("/create", "App\Controllers\PostCreateController@show");
 Route::get("/user", "App\Controllers\UserController@show");
 Route::get("/user/{part}", "App\Controllers\UserController@show", array("string"));
 Route::get("/user/edit/{id}", "App\Controllers\UserController@editShow", array("string"));
+Route::get("/reviewer", "App\Controllers\ReviewerController@show");
+Route::get("/reviewer/list", "App\Controllers\ReviewerController@listShow");
 
 // Routování pro základní URL - metoda POST
 Route::post("index.php?page=register", "App\Controllers\RegisterController@post");
@@ -39,6 +43,11 @@ Route::post("index.php?page=create", "App\Controllers\PostCreateController@post"
 Route::post("index.php?page=user&part=edit&post={id}", "App\Controllers\UserController@editPost", array("string", "string", "int"));
 Route::post("index.php?page=user", "App\Controllers\UserController@post");
 Route::post("index.php?page=user&part={part}", "App\Controllers\UserController@post", array("string", "string"));
+Route::post("index.php?page=reviewer", "App\Controllers\ReviewerController@post");
+Route::post("index.php?page=reviewer&part=detail&id={id}", "App\Controllers\ReviewerController@reviewPost", array("int", "string", "string"));
+Route::post("index.php?page=reviewer&part=list", "App\Controllers\ReviewerController@listPost");
+
+
 
 // Routování pro základní URL - metoda GET
 Route::get("index.php","App\Controllers\AboutController@show");
@@ -55,3 +64,6 @@ Route::get("index.php?page=create", "App\Controllers\PostCreateController@show")
 Route::get("index.php?page=user&part=edit&post={id}", "App\Controllers\UserController@editShow", array("string", "string", "int"));
 Route::get("index.php?page=user", "App\Controllers\UserController@show");
 Route::get("index.php?page=user&part={part}", "App\Controllers\UserController@show", array("string", "string"));
+Route::get("index.php?page=reviewer&part=detail&id={id}", "App\Controllers\ReviewerController@reviewShow", array("int", "string", "string"));
+Route::get("index.php?page=reviewer&part=list", "App\Controllers\ReviewerController@listShow");
+Route::get("index.php?page=reviewer", "App\Controllers\ReviewerController@show");

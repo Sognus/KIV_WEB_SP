@@ -6,12 +6,21 @@ use App\Database;
 use App\Views\Twig;
 
 use App\Models\Post;
+use App\Routing\Route;
 
 class PostCreateController
 {
 	
 	public static function show()
 	{
+		
+		// Ověření uživatelských práv
+		if(!isset($_SESSION["user"]["userID"]))
+		{
+			Route::error(403);
+			die();
+		}
+		
 		$data = array();
 		$data["session"] = $_SESSION;
 		$args = func_get_args();
@@ -20,8 +29,16 @@ class PostCreateController
 		
 	}
 	
+
 	public static function post()
 	{
+		// Ověření uživatelských práv
+		if(!isset($_SESSION["user"]["userID"]))
+		{
+			Route::error(403);
+			die();
+		}		
+		
 		$data = array();
 		$data["session"] = $_SESSION;
 		$args = func_get_args();
@@ -63,6 +80,8 @@ class PostCreateController
 					$data["error"] = "Nepodařilo se vložit příspěvek do databáze!";
 					break;
 				}
+				
+				$data["success"] = "Příspěvek vytvořen!";
 				
 				// Zpracování všech souborů
 				 if(count($_FILES['upload']['name']) > 0){

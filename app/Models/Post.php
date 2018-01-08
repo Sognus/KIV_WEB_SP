@@ -518,6 +518,57 @@ class Post
 		
 		Database::query($sql, $whta);
 	}
+	
+	public static function getReviewerPosts($id)
+	{
+		$sql =
+		"
+		SELECT * FROM `viteja_web_reviews`
+		INNER JOIN viteja_web_posts
+			ON viteja_web_reviews.post = viteja_web_posts.post 
+		WHERE 
+			reviewer = :id
+		AND
+			viteja_web_reviews.deleted = 0
+		AND
+			state != 'approved'
+		";
+		
+		$where = array
+		(
+			":id" => $id,
+		);
+		
+		return Database::assocAll(Database::query($sql, $where));
+		
+	}
+	
+	public static function getPostIDByReview($revID)
+	{
+		$sql = 
+		"
+		SELECT * FROM viteja_web_reviews WHERE review = :revID LIMIT 1
+		";
+		
+		$where = array
+		(
+			":revID" => $revID
+		);
+		
+		$result = Database::query($sql, $where);
+		$rows = Database::numRows($result);
+		
+		if($rows < 1)
+		{
+			return 0;
+		}
+		
+		$assoc = Database::assoc($result);
+		
+		return $assoc["post"];
+		
+		
+	}
 
 	
 	

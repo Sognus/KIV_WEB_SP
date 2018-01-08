@@ -131,7 +131,7 @@ class Review
 		
 	}
 	
-	public static function getReviewByID($id)
+	public static function getReviewByID($id, $asArr = false)
 	{
 		$sql = "SELECT * FROM `viteja_web_reviews` where review = :id LIMIT 1";
 		
@@ -149,6 +149,11 @@ class Review
 		}
 		
 		$assoc = Database::assoc($res);
+				
+		if($asArr)
+		{
+			return $assoc;
+		}
 				
 		return new self($assoc["review"], $assoc["post"], $assoc["reviewer"], $assoc["originality"], $assoc["subject"], $assoc["technical"], $assoc["language"], $assoc["note"]);
 		
@@ -342,6 +347,60 @@ class Review
 		);
 		
 		return Database::assocAll(Database::query($sql, $where));
+		
+	}
+	
+	public static function isReviewer($revID, $user)
+	{
+		$sql = 
+		"
+		SELECT * FROM `viteja_web_reviews` WHERE `review` = :revID AND `reviewer`= :user AND deleted = 0
+		";
+		
+		$where = array
+		(
+			":revID" => $revID,
+			":user" => $user,
+		);
+		
+		$result = Database::query($sql, $where);
+		$num = Database::numRows($result);
+		
+		if($num > 0)
+		{
+			return true;
+		}
+
+		
+		return false;
+		
+		
+	}
+	
+	public static function doReview($revID, $originality, $subject, $technical, $language)
+	{
+		$sql =
+		"
+		UPDATE `viteja_web_reviews` 
+		SET 
+			`originality` = :orig ,
+			`subject` = :sub ,
+			`technical` = :tech ,
+			`language` = :lang
+		WHERE `viteja_web_reviews`.`review` = :revID
+		";
+		
+		// Where + data
+		$whta = array
+		(
+			":orig" => $originality,
+			":sub" => $subject,
+			":tech" => $technical,
+			":lang" => $language,
+			":revID" => $revID
+		);
+		
+		Database::query($sql, $whta);
 		
 	}
 

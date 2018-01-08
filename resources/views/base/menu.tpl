@@ -29,7 +29,14 @@
 
 			  <li class="nav-item">
 				  <a class="nav-link js-scroll-trigger" href="index.php?page=user">Účet</a>
-			  </li>				  
+			  </li>	
+
+			  {# Odkazy pro recenzenta #}
+			  {% if session.user.accountType >= 1 %}
+			  <li class="nav-item">
+				  <a class="nav-link js-scroll-trigger" href="index.php?page=reviewer">Recenzent</a>
+			  </li>
+			  {% endif %}
 			
 			  {# Odkazy pro administrátora #}
 			  {% if session.user.accountType == 2 %}

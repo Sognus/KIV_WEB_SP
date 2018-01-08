@@ -2,7 +2,7 @@
 {% block content %}
 
 {# Vložení menu uživatle #}
-{% include "user/menu.tpl" %}
+{% include "reviewer/menu.tpl" %}
 
 				{% for order, post in posts%}
 				<div class="container message bg-light">
@@ -10,15 +10,14 @@
 							<p class="lead col-lg-3 text-dark font-weight-normal">Název příspěvku: </p>
 							<p class="lead col-lg-6 text-dark">{{post.title}}</p>
 							
-							{% if post.deleted != "1" %}
-								<form class="form-horizontal col-lg-3 text-right" role="form" method="POST" action="index.php?page=user&part=posts">
-									<button type="submit" name="post-delete-user" value="{{post.post}}" id="post-delete-user" title="Odmítnout příspěvek" class="btn btn-danger"><i class="fa fa-trash"></i> smazat</button>
-								</form>
-							{% else %}
-								<div class="col-lg-3 text-right">
-									<button type="submit" name="post-delete-user" id="post-delete-user" title="Odmítnout příspěvek" class="btn btn-danger" disabled><i class="fa fa-trash"></i> smazat</button>
-								</div>
-							{% endif %}
+								<div class="form-horizontal col-lg-3 text-right">
+									<a href="index.php?page=reviewer&part=detail&id={{post.review}}">
+										<button type="submit" title="Recenzovat příspěvek" class="btn btn-primary">
+											<i class="fa fa-star-half-full"></i> recenzovat
+										</button>
+									</a>
+								</div>	
+							
 						</div>
 						
 						<div class="row">
@@ -31,19 +30,12 @@
 									Příspěvek odmítnut
 								{% elseif post.state == "deleted" %}
 									Příspěvek smazání
-								{% elseif post.state == "review"%}
-									Probíhá recenzní řízení
+								{% elseif post.state == "review" %}
+									Příspěvek v recenzním řízením
 								{% else %}
 									{{post.state}}
 								{% endif %}
-							
-								<div class="form-horizontal col-lg-3 text-right">
-									<a href="index.php?page=user&part=edit&post={{post.post}}">
-										<button type="submit" name="post-edit-user" id="post-edit-user" title="Odmítnout příspěvek" class="btn btn-primary">
-											<i class="fa fa-trash"></i> editovat
-										</button>
-									</a>
-								</div>						
+						
 							</p>
 						</div>
 						

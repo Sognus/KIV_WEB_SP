@@ -1,12 +1,12 @@
 {% extends "base/base.tpl" %}
 {% block content %}
 	{% if posts is defined %}
-		
+	
 		{% if posts is empty %}
 			<div class="container message">
 				<div class="row">
 					<div class="col-lg-10 text-center mx-auto">
-						<h2>Tolik příspěvků zde není!</h2>
+						<h2>Nejsou zde žádné příspěvky!</h2>
 					</div>
 				</div>
 			</div>
