@@ -1,5 +1,8 @@
 <?php
 
+// Chybové hlášky
+error_reporting(0);
+
 // Načtení Autoloaderu
 require __DIR__ . '/vendor/autoload.php';
 

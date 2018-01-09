@@ -83,12 +83,12 @@ class PostCreateController
 				
 				$data["success"] = "Příspěvek vytvořen!";
 				
-				// Zpracování všech souborů
-				 if(count($_FILES['upload']['name']) > 0){
+        
 						// Zpracování každého souboru
 						for($i=0; $i<count($_FILES['upload']['name']); $i++) {
 						  // Získání dočasné cesty
 							$tmpFilePath = $_FILES['upload']['tmp_name'][$i];
+
 
 							// Ošetření 
 							if($tmpFilePath != ""){
@@ -100,10 +100,11 @@ class PostCreateController
 								$longName = $_SESSION["user"]["userID"] .'-'. date('d-m-Y-H-i-s').'-'.$_FILES['upload']['name'][$i];
 								
 								// Vytvoření cesty
-								$filePath = "upload/" . $longName;  
-
+								$filePath = __DIR__."/../../upload/" . $longName;  
+           
 								// Nahrání souboru do cílobé složky
 								if(move_uploaded_file($tmpFilePath, $filePath)) {
+
 
 									$files[] = $shortname;
 									 
@@ -114,7 +115,6 @@ class PostCreateController
 								}
 							  }
 						}
-				 }
 				
 			
 			}

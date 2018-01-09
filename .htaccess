@@ -1,6 +1,6 @@
 RewriteEngine On
 
-RewriteBase /kiv-web-sp
+RewriteBase /~viteja/kiv-web-sp/
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

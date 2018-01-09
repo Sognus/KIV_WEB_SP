@@ -12,7 +12,6 @@ class AboutController
 		$data = array();
 		$data["session"] = $_SESSION;
 		Twig::render("about.tpl", $data);
-		
 	}
 	
 	

@@ -19,19 +19,19 @@ class Twig
 	private $loader;
 	
 	// Twig_Envinroment
-	private $twig;
+	public $twig;
 	
 	public function __construct()
 	{
-		echo "<pre>";
 		
+    
 		$twig_location = __DIR__ . "/../../" . Configuration::get("TWIG_TEMPLATES");
 		$twig_cache = __DIR__ . "/../../". Configuration::get("TWIG_CACHE");
-		
+    
 		$this->loader = new Twig_Loader_Filesystem($twig_location);
-		$this->twig = new Twig_Environment($this->loader, array(/* OBNOVIT PRO CACHE 'cache' =>$twig_cache*/));
-		
-		echo "</pre>";
+		$this->twig = new Twig_Environment($this->loader);
+    
+    
 		
 	}
 	
@@ -49,10 +49,12 @@ class Twig
 	{
 		self::refreshSessionRender();
 		
+    
 		// Pokud soubor existuje, vykresli jeho obsah
 		if(file_exists(__DIR__ . "/../../" . Configuration::get("TWIG_TEMPLATES")."/".$template))
 		{
-			echo self::getInstance()->twig->render($template, $data);
+      $twig = self::getInstance()->twig;
+			echo $twig->render($template, $data);
 		}
 		else
 		{

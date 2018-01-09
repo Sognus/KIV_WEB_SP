@@ -32,4 +32,42 @@ SOUBORY A ADRESÁŘE:
 		README.md			- Popis repozitáře na github.com
 		database.sql		- Instalační scripty pro MySQL databázi (struktura + data)
 		readme.txt			- tento soubor
-	
+    
+Postup instalace:
+  1)
+    a) 
+      Připojte se do databáze, kterou bude využívat aplikace (ideální je například
+      PHPMyAdmin). 
+    b)
+      Připravte si spuštění SQL příkazů. Jako SQL příkazy použijte obsah souboru
+      database.sql
+  2)
+    a)
+      Do souboru configuration.ini vyplňte údaje pro připojení k databázi.
+    b)
+      Zkontrolujte, že aplikace již nyní nehlásí problém s připojením do databáze
+      a v sekci index.php?page=content je jeden příspěvek
+    c)
+      Nyní musíte správně nastavit root projektu v konfiguračním souboru i v .htaccess
+      Pokud se projekt nachází na adrese http://students.kiv.zcu.cz/~viteja/kiv-web-sp/
+      platí:
+        I)
+          Configuration.ini:
+            APP_ROOT="/~viteja/kiv-web-sp"
+        II)  
+          .htaccess:
+            RewriteBase /~viteja/kiv-web-sp/
+      
+      Pozor na správně umístěná lomítka
+  3)
+    a) Přístupové údaje na administrátora (po vytvoření struktury z database.sql):
+      přezdívka: Sognus
+      heslo: duyz60tip
+    
+    b) V případě že není možné se na administrátora přihlásit, vytvořte si uživatele
+    s vlastním heslem a v tabulce viteja_web_users mu nastavte příznak account
+    na hodnotu 2.
+  4)
+    Aplikace by měla vykreslovat veškerý obsah a být funkční.
+   
+       

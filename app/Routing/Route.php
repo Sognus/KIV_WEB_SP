@@ -70,7 +70,7 @@ class Route
 	
 	public function processRoutes()
 	{
-		include_once(__DIR__ . "/../../routes/web.php");
+		require_once(__DIR__ . "/../../routes/web.php");
 		
 		if(!self::getInstance()->found)
 		{
@@ -147,7 +147,7 @@ class Route
 		{
 			return false;
 		}
-		
+    
 		
 		// Ošetření mnohonásobného volání
 		if($router->found)
